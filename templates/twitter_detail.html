@@ -2,10 +2,22 @@
 
 {% block content %}
 	<div>
-	{{ object.body }}
-	by {{ object.user }}
+		<h4>{{ object.body }}</h4>
+		by {{ object.user }}
 	</div>
 
-	
+	<div>
+		{% for comment in tweet.comments.all %}
+		<p>
+			<span>{{ comment.user }}</span>
+				{{ comment }}
+			</p>
+		{% endfor %}
+	</div>
+
+	<a href="{% url 'twitter-update' tweet.id %}">Update</a>
+	<a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
+	<a href="{% url 'twitter-create' %}">Add New</a>
+
 
 {% endblock content %}

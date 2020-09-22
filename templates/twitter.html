@@ -14,10 +14,25 @@
 
 	{% for tweet in object_list %}
 	  <div class="tweet-entry">
-		<h4>{{ tweet.body }}</h4>
+		<a href="{% url 'twitter-detail' tweet.pk %}"><h4>{{ tweet.body }}</h4></a>
+		<div>
+			{% for comment in tweet.comments.all %}
+			<p>
+				<span>{{ comment.user }}</span>
+				{{ comment }}
+			</p>
+			{% endfor %}
+		</div>
 		<p>{{ tweet.user }}</p>
+
+
+
 	{% endfor %}
 	  </div>
+
+
+
+
 
 
 {% endblock content %}
