@@ -1,9 +1,10 @@
-from django.test import TestCase, SimpleTestCase
+from django.test import TestCase
 from django.contrib.auth import get_user_model 
 from django.urls import reverse 
 
 
-class TwitterPageTests(SimpleTestCase):
+
+class TwitterPageTests(TestCase):
 
 	def test_twitter_page_status_code(self):
 		response = self.client.get('/')
