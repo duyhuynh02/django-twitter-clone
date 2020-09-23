@@ -1,23 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-	<div>
-		<h4>{{ object.body }}</h4>
-		by {{ object.user }}
-	</div>
+<div class="card">
+  <div class="card-body">
+    <h5>{{ tweet.user }}</h5>
+    <p>{{ tweet.body }}</p>
+  </div>
+</div>
 
-	<div>
-		{% for comment in tweet.comments.all %}
-		<p>
-			<span>{{ comment.user }}</span>
-				{{ comment }}
-			</p>
-		{% endfor %}
-	</div>
+<div class="card">
+  <div class="card-body">
+    {% for comment in tweet.comments.all %}
+      <h5>{{ comment.user }}</h5>
+      <p>{{ comment }}</p>
+    {% endfor %}
+  </div>
+</div>
 
-	<a href="{% url 'twitter-update' tweet.id %}">Update</a>
-	<a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
-	<a href="{% url 'twitter-create' %}">Add New</a>
+<a href="{% url 'twitter-update' tweet.id %}">Update</a>
+<a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
+<a href="#">Add comment</a>
 
 
 {% endblock content %}
