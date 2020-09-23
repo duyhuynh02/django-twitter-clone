@@ -3,36 +3,12 @@
 {% block title %}Twitter{% endblock title %}
 
 {% block content %}
-	{% if user.is_authenticated %}
-		Welcome, {{ user.username }}
-		<p><a href="{% url 'logout' %}">Logout</a></p>
-	{% else %}
-		<p>You are not logged in</p> 
-		<a href="{% url 'login' %}">Login</a>
-		<a href="{% url 'register' %}">Register</a>
-	{% endif %}
-
-	{% for tweet in object_list %}
-	  <div class="tweet-entry">
-		<a href="{% url 'twitter-detail' tweet.pk %}"><h4>{{ tweet.body }}</h4></a>
-		<div>
-			{% for comment in tweet.comments.all %}
-			<p>
-				<span>{{ comment.user }}</span>
-				{{ comment }}
-			</p>
-			{% endfor %}
-		</div>
-		<p>{{ tweet.user }}</p>
-
-
-
-	{% endfor %}
-	  </div>
-
-
-
-
-
-
+  {% for tweet in object_list %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><a href="{% url 'twitter-detail' tweet.pk %}">{{ tweet.body }}</a></h5>
+    	<p class="card-text">{{ tweet.user }} | Created at {{ tweet.created_at }}</p>
+      </div>
+    </div>
+  {% endfor %}
 {% endblock content %}
