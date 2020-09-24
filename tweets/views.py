@@ -2,15 +2,17 @@ from django.contrib.auth.mixins import (
 	LoginRequiredMixin,
 	UserPassesTestMixin,
 )
-from django.views.generic import ListView, DetailView 
-from django.views.generic.edit import CreateView, UpdateView, DeleteView 
-from django.urls import reverse_lazy 
+from django.views.generic import ListView, DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
+from django.urls import reverse_lazy, reverse 
+from django.http import HttpResponseForbidden
 
 
-from .models import Tweet
+from .forms import CommentForm
+from .models import Tweet, Comment
 
 
-class TwitterListView(LoginRequiredMixin, ListView):
+class TwitterListView(ListView):
 	model = Tweet
 	template_name = 'twitter.html'
 	login_url = 'login'
@@ -27,10 +29,37 @@ class TwitterCreateView(LoginRequiredMixin, CreateView):
 		return super().form_valid(form)
 
 
-class TwitterDetailView(LoginRequiredMixin, DetailView):
+class TwitterDetailView(LoginRequiredMixin, FormMixin, DetailView):
 	model = Tweet 
 	template_name = 'twitter_detail.html'
 	login_url = 'login'
+	form_class = CommentForm
+
+	def get_success_url(self):
+		return reverse('twitter-detail', kwargs={'pk': self.object.pk})
+
+	def get_context_data(self, **kwargs):
+		context = super(TwitterDetailView, self).get_context_data(**kwargs)
+		context['form'] = CommentForm(initial={'post': self.object})
+		return context 
+
+	def post(self, request, *args, **kwargs):
+		if not request.user.is_authenticated:
+			return HttpResponseForbidden()
+		self.object = self.get_object()
+		form = self.get_form()
+
+		if form.is_valid():
+			return self.form_valid(form)
+		else:
+			return self.form_invalid(form)
+
+	def form_valid(self, form):
+		instance = form.save(commit=False)
+		instance.user = self.request.user 
+		instance.body = self.object 
+		instance.save()	
+		return super(TwitterDetailView, self).form_valid(form)
 
 
 class TwitterUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

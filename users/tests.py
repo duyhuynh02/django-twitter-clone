@@ -7,7 +7,7 @@ from django.urls import reverse
 class TwitterPageTests(TestCase):
 
 	def test_twitter_page_status_code(self):
-		response = self.client.get('/')
+		response = self.client.get("/")
 		self.assertEqual(response.status_code, 200)
 
 	def test_view_url_by_name(self):

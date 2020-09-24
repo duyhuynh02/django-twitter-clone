@@ -1,25 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<!-- Tweets -->
 <div class="card">
+  <div class="card-header">
+    Tweet
+  </div>
   <div class="card-body">
-    <h5>{{ tweet.user }}</h5>
-    <p>{{ tweet.body }}</p>
+    <h3>{{ tweet.user }}</h3>
+    <p class="card-text">{{ tweet.body }}</p>
   </div>
 </div>
 
+<!-- Form for comment --> 
 <div class="card">
+  <div class="card-header">
+    Add comment
+  </div>
+  <div class="card-body">
+    <form method="post">{% csrf_token %}
+      {{ form.as_p }}
+      <button method="submit" class="btn btn-success primary">Post</button>
+    </form>
+  </div>
+</div>
+
+<!-- Comments --> 
+<div class="card">
+  <div class="card-header">
+    Comment
+  </div>
   <div class="card-body">
     {% for comment in tweet.comments.all %}
-      <h5>{{ comment.user }}</h5>
-      <p>{{ comment }}</p>
+      <h3>{{ comment.user }}</h3>
+      <p>{{ comment }} - {{ comment.created_at }}</p>
     {% endfor %}
   </div>
 </div>
 
+
 <a href="{% url 'twitter-update' tweet.id %}">Update</a>
 <a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
-<a href="#">Add comment</a>
+
 
 
 {% endblock content %}

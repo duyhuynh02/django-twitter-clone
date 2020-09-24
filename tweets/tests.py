@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+
 from .models import Tweet
 
 class TweetTests(TestCase):
@@ -39,6 +40,7 @@ class TweetTests(TestCase):
 	def test_tweet_detail_view(self):
 		response = self.client.get('/tweets/1/')
 		no_response = self.client.get('/tweets/100000/')
+		print(response['location'])
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(no_response.status_code, 404)
 		self.assertContains(response, 'Test tweet!')
