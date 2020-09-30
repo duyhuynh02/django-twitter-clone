@@ -7,8 +7,20 @@
     Tweet
   </div>
   <div class="card-body">
-    <h3>{{ tweet.user }}</h3>
+    <h3>{{ tweet.user }}</h3> 
     <p class="card-text">{{ tweet.body }}</p>
+    <form action="{% url 'like_post' tweet.id %}" method="POST"> 
+      {% csrf_token %}
+      {% if liked %}
+        <button name="tweet_id" value="{{ tweet.id }}" 
+        type="submit" class="btn btn-danger btn-sm">Unlike</button> 
+        <small>{{ total_likes }} likes</small>
+      {% else %}
+        <button name="tweet_id" value="{{ tweet.id }}" 
+        type="submit" class="btn btn-primary btn-sm">Like</button> 
+        <small>{{ total_likes }} likes</small>
+      {% endif %}
+    </form>
   </div>
 </div>
 
@@ -38,7 +50,7 @@
   </div>
 </div>
 
-
+<!-- Update and Delete button -->
 <a href="{% url 'twitter-update' tweet.id %}">Update</a>
 <a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
 

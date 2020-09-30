@@ -11,9 +11,13 @@ class Tweet(models.Model):
 	)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
+	likes = models.ManyToManyField(get_user_model(), related_name='tweet_likes')
 
 	def __str__(self):
 		return self.body[:25]
+
+	def total_likes(self):
+		return self.likes.count()
 
 	def get_absolute_url(self):
 		return reverse('twitter')
