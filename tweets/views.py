@@ -46,7 +46,6 @@ class TwitterDetailView(LoginRequiredMixin, FormMixin, DetailView):
 	login_url = 'login'
 	form_class = CommentForm
 
-
 	def get_context_data(self, **kwargs):
 		context = super(TwitterDetailView, self).get_context_data(**kwargs)
 		tweet = get_object_or_404(Tweet, pk=self.kwargs['pk'])
@@ -62,6 +61,9 @@ class TwitterDetailView(LoginRequiredMixin, FormMixin, DetailView):
 		context['liked'] = liked 
 
 		return context 
+
+	def get_success_url(self):
+		return reverse('twitter-detail', kwargs={'pk': self.object.pk})
 
 	def post(self, request, *args, **kwargs):
 		if not request.user.is_authenticated:
@@ -80,9 +82,6 @@ class TwitterDetailView(LoginRequiredMixin, FormMixin, DetailView):
 		instance.body = self.object 
 		instance.save()	
 		return super(TwitterDetailView, self).form_valid(form)
-
-	def get_success_url(self):
-		return reverse('twitter-detail', kwargs={'pk': self.object.pk})
 
 
 class TwitterUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

@@ -3,12 +3,25 @@
 {% block title %}Twitter{% endblock title %}
 
 {% block content %}
+
+Profile
+	<br><img 
+		class="rounded-circle mr-3" 
+		style="width: 100px; height: 100px;"
+		src="{{ user.profile.image.url }}">
+	<h4>{{ user.username }}</h4>
+	<br>{{ user.email }}
+	<br>Following: {{ user.profile.followers }}
+	<br>Followers: {{ user.profile.following }}
+
+
+
   {% for tweet in object_list %}
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title"><a href="{% url 'twitter-detail' tweet.pk %}">{{ tweet.body }}</a></h5>
-    	<p class="card-text">{{ tweet.user }} | Created at {{ tweet.created_at }}</p>
-      </div>
-    </div>
+			    <div class="card">
+			      <div class="card-body">
+			        <h5 class="card-title"><a href="{% url 'twitter-detail' tweet.pk %}">{{ tweet.body }}</a></h5>
+			    	<p class="card-text">{{ tweet.user }} | Created at {{ tweet.created_at }}</p>
+			      </div>
+			    </div>
   {% endfor %}
 {% endblock content %}

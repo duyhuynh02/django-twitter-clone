@@ -24,7 +24,7 @@ class Tweet(models.Model):
 
 
 class Comment(models.Model):
-	body = models.ForeignKey(
+	tweet = models.ForeignKey(
 		Tweet, 
 		on_delete=models.CASCADE,
 		related_name='comments',
