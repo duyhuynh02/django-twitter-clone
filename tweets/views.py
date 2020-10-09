@@ -8,7 +8,6 @@ from django.urls import reverse_lazy, reverse
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render 
 
-
 from .forms import CommentForm
 from .models import Tweet, Comment
 
@@ -18,7 +17,7 @@ class TwitterListView(ListView):
 	template_name = 'twitter.html'
 	login_url = 'login'
 
-
+	
 class TwitterCreateView(LoginRequiredMixin, CreateView):
 	model = Tweet 
 	template_name = 'twitter_create.html'
@@ -29,7 +28,7 @@ class TwitterCreateView(LoginRequiredMixin, CreateView):
 		form.instance.user = self.request.user 
 		return super().form_valid(form)
 
-
+	
 def LikeTweetView(request, pk):
 	tweet = get_object_or_404(Tweet, pk=request.POST.get('tweet_id'))
 	if tweet.likes.filter(id=request.user.id).exists():
@@ -83,7 +82,7 @@ class TwitterDetailView(LoginRequiredMixin, FormMixin, DetailView):
 		instance.save()	
 		return super(TwitterDetailView, self).form_valid(form)
 
-
+	
 class TwitterUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 	model = Tweet 
 	template_name = 'twitter_update.html'
