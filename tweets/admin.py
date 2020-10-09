@@ -4,13 +4,12 @@ from .models import Tweet, Comment
 
 
 class CommentInline(admin.TabularInline):
-	model = Comment 
-
+    model = Comment 
 
 class TweetAdmin(admin.ModelAdmin):
-	inlines = [
-		CommentInline,
-	]
+    inlines = [
+        CommentInline,
+    ]
 
 admin.site.register(Tweet, TweetAdmin)
 admin.site.register(Comment)
