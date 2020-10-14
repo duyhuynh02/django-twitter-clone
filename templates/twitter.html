@@ -1,27 +1,70 @@
-{% extends 'base.html' %}
-
-{% block title %}Twitter{% endblock title %}
-
+{% extends "base.html" %}
 {% block content %}
+<div class="container">
+  <div class="row">
 
-Profile
-    <br><img 
-        class="rounded-circle mr-3" 
-        style="width: 100px; height: 100px;"
-        src="{{ user.profile.image.url }}">
-    <h4>{{ user.username }}</h4>
-    <br>{{ user.email }}
-    <br>Following: {{ user.profile.followers }}
-    <br>Followers: {{ user.profile.following }}
+    <div class="col-2">
+      <h2>Profile</h2>
+      <img class="rounded-circle mr-3"
+          style="width: 100px; height: 100px;"
+          src="{{ user.profile.image.url }}">
+      <h4 style="text-align: left">{{ user.username }}</h4>
+      <h4><div class="card">
+          <div class="card-body">
+            {{ user.profile.bio }}
+          </div>
+        </div>
+      </h4>
+      <a href="#"><h5>{{ user.profile.followers }} <small>followers</small></h5></a>
+      <a href="#"><h5>{{ user.profile.following }} <small>following</small></h5></a>
+      <br>
+      <a 
+        class="btn btn-primary btn-lg"
+        href="{% url 'twitter-create' %}">Tweet</a>
+    </div>
 
+    <div class="col-7">
+    <h2>Newsfeed</h2>
+    {% for tweet in tweets_list %}
+      <div class="card">
+        <div class="card-header">
+          <span class="text-muted">{{ tweet.user }} | {{ tweet.created_at | date:"H:i l, d.m.y" }}</span>
+        </div>
+        <div class="card-body">
+          <p>{{ tweet.body }}</p>
+          <a 
+            style="font-size: 12px" 
+            href="{% url 'twitter-delete' tweet.id %}">(Delete)</a>
+          <a 
+            style="font-size: 12px" 
+            href="{% url 'twitter-update' tweet.id %}">(Update)</a>
+          <a 
+            style="font-size: 12px" 
+            href="{% url 'twitter-detail' tweet.id %}">(See detail)</a>
+          <br>
+          <small>{{ tweet.number_of_comments }} comment(s)</small>
+          <small>{{ tweet.total_likes }} like(s)</small>
+        </div>
+      </div>
+    {% endfor %}
+    </div>
 
+    <div class="col-1">
+    <h2>More</h2>
+    <div class="card" style="width: 18rem;">
+      <div class="card-header">
+        @2020 Twitter, Inc - by Duy Huynh  
+      </div>
+  <ul class="list-group list-group-flush">
+    <a href="#"><li class="list-group-item">Privacy Policy</li></a>
+    <a href="#"><li class="list-group-item">Cookies</li></a>
+    <a href="#"><li class="list-group-item">Ads info</li></a>
+  </ul>
+</div>
+    </div>
+ 
 
-  {% for tweet in object_list %}
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title"><a href="{% url 'twitter-detail' tweet.pk %}">{{ tweet.body }}</a></h5>
-                    <p class="card-text">{{ tweet.user }} | Created at {{ tweet.created_at }}</p>
-                  </div>
-                </div>
-  {% endfor %}
+  </div>
+  </div>
+</div>
 {% endblock content %}

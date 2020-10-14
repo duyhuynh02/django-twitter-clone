@@ -18,6 +18,7 @@ class TwitterPageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'twitter.html')
 
+
 class RegisterPageTests(TestCase):
 
     username = 'tester00'

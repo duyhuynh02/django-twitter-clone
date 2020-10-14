@@ -19,6 +19,10 @@ class Tweet(models.Model):
     def total_likes(self):
         return self.likes.count()
 
+    @property
+    def number_of_comments(self):
+        return Comment.objects.filter(tweet=self).count()
+
     def get_absolute_url(self):
         return reverse('twitter')
 
@@ -41,3 +45,5 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse('twitter-detail')
+
+
