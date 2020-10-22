@@ -3,68 +3,104 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-2">
-      <h2>Profile</h2>
-      <img class="rounded-circle mr-3"
+<!-- First column, profile -->
+<div class="col-2">
+  <h2>Profile</h2>
+    {% if actual_user %}
+    <!-- For user page list -->
+    <img class="rounded-circle mr-3"
           style="width: 100px; height: 100px;"
-          src="{{ user.profile.image.url }}">
-      <h4 style="text-align: left">{{ user.username }}</h4>
-      <h4><div class="card">
-          <div class="card-body">
-            {{ user.profile.bio }}
-          </div>
+          src="{{ actual_user.profile.image.url }}">
+    <h4 style="text-align: left">
+      <a href="{% url 'user-feeds' actual_user.username %}">{{ actual_user.username }}</a>
+    </h4>
+    <h4>
+      <div class="card">
+        <div class="card-body">
+            <q><small><i>{{ actual_user.profile.bio }}</i></small></q>
         </div>
-      </h4>
-      <a href="#"><h5>{{ user.profile.followers }} <small>followers</small></h5></a>
-      <a href="#"><h5>{{ user.profile.following }} <small>following</small></h5></a>
+      </div>
+    </h4>
+      <a href="#"><h5>{{ actual_user.profile.followers }} <small>Followers</small></h5></a>
+      <a href="#"><h5>{{ actual_user.profile.following }} <small>Following</small></h5></a>
       <br>
       <a 
         class="btn btn-primary btn-lg"
         href="{% url 'twitter-create' %}">Tweet</a>
-    </div>
+    {% else %}
+    <!-- For homepage --> 
+    <img class="rounded-circle mr-3"
+          style="width: 100px; height: 100px;"
+          src="{{ user.profile.image.url }}">
+    <h4 style="text-align: left"><a href="{% url 'user-feeds' user.username %}">{{ user.username }}</a></h4>
+    <h4><div class="card">
+      <div class="card-body">
+          <q><small><i>{{ user.profile.bio }}</i></small></q>
+      </div>
+        </div>
+    </h4>
+      <a href="#"><h5>{{ user.profile.followers }} <small>Followers</small></h5></a>
+      <a href="#"><h5>{{ user.profile.following }} <small>Following</small></h5></a>
+      <br>
+      <a 
+        class="btn btn-primary btn-lg"
+        href="{% url 'twitter-create' %}">Tweet</a>
+    {% endif %}
+</div>
 
-    <div class="col-7">
-    <h2>Newsfeed</h2>
+<!-- 2nd column, Newsfeed -->
+<div class="col-7">
+  <h2>Newsfeed</h2>
     {% for tweet in tweets_list %}
       <div class="card">
         <div class="card-header">
-          <span class="text-muted">{{ tweet.user }} | {{ tweet.created_at | date:"H:i l, d.m.y" }}</span>
+            <span class="text-muted"> 
+            <img class="rounded-circle mr-3"
+            style="width: 20px; height: 20px;"
+            src="{{ tweet.user.profile.image.url }}">
+          <a href="#">{{ tweet.user }}</a> | {{ tweet.created_at | date:"H:i l, d.m.y" }}
+            </span>
         </div>
         <div class="card-body">
-          <p>{{ tweet.body }}</p>
-          <a 
-            style="font-size: 12px" 
-            href="{% url 'twitter-delete' tweet.id %}">(Delete)</a>
-          <a 
-            style="font-size: 12px" 
-            href="{% url 'twitter-update' tweet.id %}">(Update)</a>
-          <a 
-            style="font-size: 12px" 
-            href="{% url 'twitter-detail' tweet.id %}">(See detail)</a>
-          <br>
-          <small>{{ tweet.number_of_comments }} comment(s)</small>
-          <small>{{ tweet.total_likes }} like(s)</small>
+            <p>{{ tweet.body }}</p>
+            <a 
+              style="font-size: 12px" 
+              href="{% url 'twitter-delete' tweet.id %}"><i>(Delete)</i></a>
+            <a 
+              style="font-size: 12px" 
+              href="{% url 'twitter-update' tweet.id %}"><i>(Update)</i></a>
+            <br><small>
+              <a href="{% url 'twitter-detail' tweet.id %}">
+                {{ tweet.number_of_comments }} comment(s)
+              </a>
+            </small>
+            <small>
+              <a href="#">
+              {{ tweet.total_likes }} like(s) 
+              </a>
+            </small>
         </div>
       </div>
     {% endfor %}
-    </div>
+</div>
 
-    <div class="col-1">
-    <h2>More</h2>
+<!-- 3rd column, Explore -->
+<div class="col-1">
+  <h2>More</h2>
     <div class="card" style="width: 18rem;">
       <div class="card-header">
         @2020 Twitter, Inc - by Duy Huynh  
       </div>
-  <ul class="list-group list-group-flush">
-    <a href="#"><li class="list-group-item">Privacy Policy</li></a>
-    <a href="#"><li class="list-group-item">Cookies</li></a>
-    <a href="#"><li class="list-group-item">Ads info</li></a>
-  </ul>
-</div>
+        <ul class="list-group list-group-flush">
+          <a href="#"><li class="list-group-item">Privacy Policy</li></a>
+          <a href="#"><li class="list-group-item">Cookies</li></a>
+          <a href="#"><li class="list-group-item">Ads info</li></a>
+        </ul>
     </div>
- 
+</div>
 
-  </div>
+<!-- End here -->
   </div>
 </div>
+
 {% endblock content %}

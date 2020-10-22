@@ -2,58 +2,62 @@
 
 {% block content %}
 <!-- Tweets Body -->
-<div class="card">
-  <div class="card-header">
-    Tweet
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      Tweet
+    </div>
+    <div class="card-body">
+      <h3>{{ tweet.user }}</h3> 
+      <p class="card-text">{{ tweet.body }}</p>
+      <form action="{% url 'like-tweet' tweet.id %}" method="POST"> 
+        {% csrf_token %}
+        {% if liked %}
+          <button name="tweet_id" value="{{ tweet.id }}" 
+          type="submit" class="btn btn-danger btn-sm">Unlike</button> 
+          <small>{{ total_likes }} likes</small>
+        {% else %}
+          <button name="tweet_id" value="{{ tweet.id }}" 
+          type="submit" class="btn btn-primary btn-sm">Like</button> 
+          <small>{{ total_likes }} likes</small>
+        {% endif %}
+      </form>
+    </div>
   </div>
-  <div class="card-body">
-    <h3>{{ tweet.user }}</h3> 
-    <p class="card-text">{{ tweet.body }}</p>
-    <form action="{% url 'like_post' tweet.id %}" method="POST"> 
-      {% csrf_token %}
-      {% if liked %}
-        <button name="tweet_id" value="{{ tweet.id }}" 
-        type="submit" class="btn btn-danger btn-sm">Unlike</button> 
-        <small>{{ total_likes }} likes</small>
-      {% else %}
-        <button name="tweet_id" value="{{ tweet.id }}" 
-        type="submit" class="btn btn-primary btn-sm">Like</button> 
-        <small>{{ total_likes }} likes</small>
-      {% endif %}
-    </form>
+
+  <!-- Form for comment --> 
+  <div class="card">
+    <div class="card-header">
+      Add comment
+    </div>
+    <div class="card-body">
+      <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button method="submit" class="btn btn-success primary">Post</button>
+      </form>
+    </div>
   </div>
+
+  <!-- Comments --> 
+  <div class="card">
+    <div class="card-header">
+      Comment
+    </div>
+    <div class="card-body">
+      {% for comment in tweet.comments.all %}
+        <h3>{{ comment.user }}</h3>
+        <p>{{ comment }} - {{ comment.created_at }}</p>
+        {% empty %}
+          <div class="alert alert-dark" role="alert">
+            There are no comments yet.
+          </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Update and Delete button -->
+  <a href="{% url 'twitter-update' tweet.id %}">Update</a>
+  <a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
+
 </div>
-
-<!-- Form for comment --> 
-<div class="card">
-  <div class="card-header">
-    Add comment
-  </div>
-  <div class="card-body">
-    <form method="post">{% csrf_token %}
-      {{ form.as_p }}
-      <button method="submit" class="btn btn-success primary">Post</button>
-    </form>
-  </div>
-</div>
-
-<!-- Comments --> 
-<div class="card">
-  <div class="card-header">
-    Comment
-  </div>
-  <div class="card-body">
-    {% for comment in tweet.comments.all %}
-      <h3>{{ comment.user }}</h3>
-      <p>{{ comment }} - {{ comment.created_at }}</p>
-    {% endfor %}
-  </div>
-</div>
-
-<!-- Update and Delete button -->
-<a href="{% url 'twitter-update' tweet.id %}">Update</a>
-<a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
-
-
-
 {% endblock content %}

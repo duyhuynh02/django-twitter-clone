@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
 )
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, FormView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render 
@@ -10,6 +10,7 @@ from django.urls import reverse_lazy, reverse
 
 from .forms import CommentForm
 from .models import Tweet, Comment
+from users.models import CustomUser 
 
 
 class TwitterListView(LoginRequiredMixin, ListView):
@@ -18,6 +19,16 @@ class TwitterListView(LoginRequiredMixin, ListView):
     login_url = 'login'
     ordering = ['-created_at']
     context_object_name = 'tweets_list'
+
+
+class UserTweetListView(TwitterListView):
+    template_name = 'user_newsfeed.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        actual_user = get_object_or_404(CustomUser, username=self.kwargs.get('username'))
+        context['actual_user'] = actual_user
+        return context
 
 	
 class TwitterCreateView(LoginRequiredMixin, CreateView):
@@ -46,30 +57,12 @@ class TwitterDetailView(LoginRequiredMixin, FormMixin, DetailView):
     login_url = 'login'
     form_class = CommentForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        tweet = get_object_or_404(Tweet, pk=self.kwargs['pk'])
-        total_likes = tweet.total_likes()
-
-        if tweet.likes.filter(id=self.request.user.id).exists():
-            liked = True  
-        else:
-            liked = False
-
-        context['form'] = CommentForm(initial={'post': self.object})
-        context['total_likes'] = total_likes
-        context['liked'] = liked 
-        return context 
-
     def get_success_url(self):
         return reverse('twitter-detail', kwargs={'pk': self.object.pk})
 
     def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return HttpResponseForbidden()
         self.object = self.get_object()
         form = self.get_form()
-
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -78,11 +71,24 @@ class TwitterDetailView(LoginRequiredMixin, FormMixin, DetailView):
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.user = self.request.user 
-        instance.body = self.object 
-        instance.save() 
-        return super(TwitterDetailView, self).form_valid(form)
+        instance.tweet = self.object
+        instance.save()     
+        return super().form_valid(form)
 
-	
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tweet = get_object_or_404(Tweet, pk=self.kwargs['pk'])
+        if tweet.likes.filter(id=self.request.user.id).exists():
+            liked = True  
+        else:
+            liked = False
+            
+        context['form'] = CommentForm()
+        context['total_likes'] = tweet.total_likes
+        context['liked'] = liked 
+        return context 
+
+
 class TwitterUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Tweet 
     template_name = 'twitter_update.html'
@@ -103,4 +109,6 @@ class TwitterDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         obj = self.get_object()
         return obj.user == self.request.user
+
+
 

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
+from users.models import CustomUser
+
 
 class Tweet(models.Model):
     body = models.CharField(max_length=255, blank=True, null=True)
@@ -11,7 +13,7 @@ class Tweet(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    likes = models.ManyToManyField(get_user_model(), related_name='tweet_likes')
+    likes = models.ManyToManyField(CustomUser, related_name='tweet_likes')
 
     def __str__(self):
         return self.body[:25]
@@ -44,6 +46,6 @@ class Comment(models.Model):
         return self.comment
 
     def get_absolute_url(self):
-        return reverse('twitter-detail')
+        return reverse('twitter-detail', args=[str(pk)])
 
 
