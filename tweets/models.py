@@ -8,7 +8,7 @@ from users.models import CustomUser
 class Tweet(models.Model):
     body = models.CharField(max_length=255, blank=True, null=True)
     user = models.ForeignKey(
-        get_user_model(),
+        CustomUser,
         on_delete=models.CASCADE,
     )
     created_at = models.DateTimeField(auto_now_add=True)

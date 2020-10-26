@@ -52,35 +52,35 @@
 <div class="col-7">
   <h2>Newsfeed</h2>
     {% for tweet in tweets_list %}
-      <div class="card">
-        <div class="card-header">
-            <span class="text-muted"> 
-            <img class="rounded-circle mr-3"
-            style="width: 20px; height: 20px;"
-            src="{{ tweet.user.profile.image.url }}">
-          <a href="#">{{ tweet.user }}</a> | {{ tweet.created_at | date:"H:i l, d.m.y" }}
-            </span>
+        <div class="card">
+          <div class="card-header">
+              <span class="text-muted"> 
+              <img class="rounded-circle mr-3"
+              style="width: 20px; height: 20px;"
+              src="{{ tweet.user.profile.image.url }}">
+            <a href="{% url 'user-feeds' tweet.user.username %}">{{ tweet.user }}</a> | {{ tweet.created_at | date:"H:i l, d.m.y" }}
+              </span>
+          </div>
+          <div class="card-body">
+              <p>{{ tweet.body }}</p>
+              <a 
+                style="font-size: 12px" 
+                href="{% url 'twitter-delete' tweet.id %}"><i>(Delete)</i></a>
+              <a 
+                style="font-size: 12px" 
+                href="{% url 'twitter-update' tweet.id %}"><i>(Update)</i></a>
+              <br><small>
+                <a href="{% url 'twitter-detail' tweet.id %}">
+                  {{ tweet.number_of_comments }} comment(s)
+                </a>
+              </small>
+              <small>
+                <a href="#">
+                {{ tweet.total_likes }} like(s) 
+                </a>
+              </small>
+          </div>
         </div>
-        <div class="card-body">
-            <p>{{ tweet.body }}</p>
-            <a 
-              style="font-size: 12px" 
-              href="{% url 'twitter-delete' tweet.id %}"><i>(Delete)</i></a>
-            <a 
-              style="font-size: 12px" 
-              href="{% url 'twitter-update' tweet.id %}"><i>(Update)</i></a>
-            <br><small>
-              <a href="{% url 'twitter-detail' tweet.id %}">
-                {{ tweet.number_of_comments }} comment(s)
-              </a>
-            </small>
-            <small>
-              <a href="#">
-              {{ tweet.total_likes }} like(s) 
-              </a>
-            </small>
-        </div>
-      </div>
     {% endfor %}
 </div>
 

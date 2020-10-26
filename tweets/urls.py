@@ -17,7 +17,7 @@ urlpatterns = [
     path('tweets/<int:pk>/liked/', LikeTweetView, name='like-tweet'),
     path('tweets/<int:pk>/update/', TwitterUpdateView.as_view(), name='twitter-update'),
     path('tweets/<int:pk>/delete/', TwitterDeleteView.as_view(), name='twitter-delete'),
-    path('user/<str:username>', UserTweetListView.as_view(), name='user-feeds'),
+    path('tweets/<str:username>', UserTweetListView.as_view(), name='user-feeds'),
     path('', TwitterListView.as_view(), name='twitter'),
 
 ]

@@ -10,6 +10,11 @@
     <div class="card-body">
       <h3>{{ tweet.user }}</h3> 
       <p class="card-text">{{ tweet.body }}</p>
+        <!-- Update and Delete button -->
+        <fieldset>
+          <small><a href="{% url 'twitter-update' tweet.id %}">Update</a></small>
+          <small><a href="{% url 'twitter-delete' tweet.id %}">Delete</a></small>
+        </fieldset>
       <form action="{% url 'like-tweet' tweet.id %}" method="POST"> 
         {% csrf_token %}
         {% if liked %}
@@ -24,6 +29,7 @@
       </form>
     </div>
   </div>
+
 
   <!-- Form for comment --> 
   <div class="card">
@@ -45,7 +51,9 @@
     </div>
     <div class="card-body">
       {% for comment in tweet.comments.all %}
-        <h3>{{ comment.user }}</h3>
+        <h3><img class="rounded-circle mr-3"
+              style="width: 20px; height: 20px;"
+              src="{{ comment.user.profile.image.url }}"><a href="{% url 'user-feeds' comment.user.username %}">{{ comment.user }}</a></h3>
         <p>{{ comment }} - {{ comment.created_at }}</p>
         {% empty %}
           <div class="alert alert-dark" role="alert">
@@ -55,9 +63,6 @@
     </div>
   </div>
 
-  <!-- Update and Delete button -->
-  <a href="{% url 'twitter-update' tweet.id %}">Update</a>
-  <a href="{% url 'twitter-delete' tweet.id %}">Delete</a>
 
 </div>
 {% endblock content %}

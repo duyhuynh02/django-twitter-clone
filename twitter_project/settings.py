@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     #Local app 
     'tweets.apps.TweetsConfig',
     'users.apps.UsersConfig',
-
 ]
 
 MIDDLEWARE = [

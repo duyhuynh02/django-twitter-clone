@@ -6,6 +6,7 @@ from .models import Tweet, Comment
 class CommentInline(admin.TabularInline):
     model = Comment 
 
+
 class TweetAdmin(admin.ModelAdmin):
     inlines = [
         CommentInline,
