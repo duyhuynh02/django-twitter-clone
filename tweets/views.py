@@ -10,7 +10,8 @@ from django.urls import reverse_lazy, reverse
 
 from .forms import CommentForm
 from .models import Tweet, Comment
-from users.models import CustomUser 
+
+from users.models import CustomUser, Follow  
 
 
 class TwitterListView(LoginRequiredMixin, ListView):
@@ -109,6 +110,36 @@ class TwitterDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         obj = self.get_object()
         return obj.user == self.request.user
+
+
+class UserFollowingView(ListView):
+    model = Follow 
+    template_name = 'user_follow.html'
+    context_object_name = 'follows'
+
+    def get_queryset(self):
+        self.user = get_object_or_404(CustomUser, username=self.kwargs['username'])
+        return Follow.objects.filter(user=self.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['follow'] = 'following'
+        return context 
+
+
+class UserFollowerView(ListView):
+    model = Follow 
+    template_name = 'user_follow.html'
+    context_object_name = 'follows'
+
+    def get_queryset(self):
+        self.follower = get_object_or_404(CustomUser, username=self.kwargs['username'])
+        return Follow.objects.filter(follower=self.follower)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['follow'] = 'followers'
+        return context 
 
 
 

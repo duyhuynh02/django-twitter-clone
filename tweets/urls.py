@@ -8,6 +8,8 @@ from .views import (
     TwitterDeleteView,
     LikeTweetView,
     UserTweetListView, 
+    UserFollowingView,
+    UserFollowerView,
 )
 
 
@@ -17,7 +19,9 @@ urlpatterns = [
     path('tweets/<int:pk>/liked/', LikeTweetView, name='like-tweet'),
     path('tweets/<int:pk>/update/', TwitterUpdateView.as_view(), name='twitter-update'),
     path('tweets/<int:pk>/delete/', TwitterDeleteView.as_view(), name='twitter-delete'),
-    path('tweets/<str:username>', UserTweetListView.as_view(), name='user-feeds'),
+    path('user/<str:username>', UserTweetListView.as_view(), name='user-feeds'),
+    path('user/<str:username>/following', UserFollowingView.as_view(), name='user-following'),
+    path('user/<str:username>/followers', UserFollowerView.as_view(), name='user-followers'),
     path('', TwitterListView.as_view(), name='twitter'),
 
 ]

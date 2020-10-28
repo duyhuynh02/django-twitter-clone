@@ -39,8 +39,8 @@
       </div>
         </div>
     </h4>
-      <a href="#"><h5>{{ user.profile.followers }} <small>Followers</small></h5></a>
-      <a href="#"><h5>{{ user.profile.following }} <small>Following</small></h5></a>
+      <a href="{% url 'user-followers' user.username %}"><h5>{{ user.profile.followers }} <small>Followers</small></h5></a>
+      <a href="{% url 'user-following' user.username %}"><h5>{{ user.profile.following }} <small>Following</small></h5></a>
       <br>
       <a 
         class="btn btn-primary btn-lg"
