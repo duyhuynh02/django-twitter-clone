@@ -8,7 +8,9 @@
       Tweet
     </div>
     <div class="card-body">
-      <h3>{{ tweet.user }}</h3> 
+              <h3><img class="rounded-circle mr-3"
+              style="width: 40px; height: 40px;"
+              src="{{ tweet.user.profile.image.url }}"><a href="{% url 'user-feeds' tweet.user.username %}">{{ tweet.user }}</a></h3> 
       <p class="card-text">{{ tweet.body }}</p>
         <!-- Update and Delete button -->
         <fieldset>

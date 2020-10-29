@@ -24,9 +24,6 @@
       <a href="#"><h5>{{ actual_user.profile.followers }} <small>Followers</small></h5></a>
       <a href="#"><h5>{{ actual_user.profile.following }} <small>Following</small></h5></a>
       <br>
-      <a 
-        class="btn btn-primary btn-lg"
-        href="{% url 'twitter-create' %}">Tweet</a>
     {% else %}
     <!-- For homepage --> 
     <img class="rounded-circle mr-3"
@@ -82,6 +79,24 @@
           </div>
         </div>
     {% endfor %}
+<!--     Pagination for list views -->
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 </div>
 
 <!-- 3rd column, Explore -->

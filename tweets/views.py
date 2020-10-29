@@ -20,6 +20,15 @@ class TwitterListView(LoginRequiredMixin, ListView):
     login_url = 'login'
     ordering = ['-created_at']
     context_object_name = 'tweets_list'
+    paginate_by = 4
+
+    def get_queryset(self):
+        user = self.request.user 
+        following_user = [user]
+        queryset = Follow.objects.filter(user=user)
+        for obj in queryset:
+            following_user.append(obj.follower)
+        return Tweet.objects.filter(user__in=following_user).order_by('-created_at')
 
 
 class UserTweetListView(TwitterListView):
@@ -31,7 +40,7 @@ class UserTweetListView(TwitterListView):
         context['actual_user'] = actual_user
         return context
 
-	
+
 class TwitterCreateView(LoginRequiredMixin, CreateView):
     model = Tweet 
     template_name = 'twitter_create.html'
