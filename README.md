@@ -7,6 +7,9 @@ $ pipenv install django==3.0.3
 $ pipenv shell
 $ python manage.py runserver
 ```
+## Accounts
+- __username__: tester03 | __password__: Aewk10AMK@D9$
+- __username__: tester07 | __password__: mL1LKmnrj^49
 
 ## Source
 - Python = 3.8
