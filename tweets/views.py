@@ -2,14 +2,14 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin,
 )
-from django.views.generic import ListView, DetailView, FormView 
+from django.views.generic import ListView, DetailView 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormMixin
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render 
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 
 from .forms import CommentForm
-from .models import Tweet, Comment
+from .models import Tweet
 
 from users.models import CustomUser, Follow  
 
@@ -20,7 +20,7 @@ class TwitterListView(LoginRequiredMixin, ListView):
     login_url = 'login'
     ordering = ['-created_at']
     context_object_name = 'tweets_list'
-    paginate_by = 4
+    paginate_by = 5
 
     def get_queryset(self):
         user = self.request.user 
@@ -31,14 +31,43 @@ class TwitterListView(LoginRequiredMixin, ListView):
         return Tweet.objects.filter(user__in=following_user).order_by('-created_at')
 
 
-class UserTweetListView(TwitterListView):
+class UserTweetListView(LoginRequiredMixin, ListView):
+    model = Tweet
     template_name = 'user_newsfeed.html'
+    login_url = 'login'
+    ordering = ['-created_at']
+    context_object_name = 'tweets_list'
+    paginate_by = 5 
+
+    def visible_user(self):
+        return get_object_or_404(CustomUser, username=self.kwargs['username'])
+
+    def get_queryset(self):
+        user = self.visible_user()
+        return Tweet.objects.filter(user=user).order_by('-created_at')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        actual_user = get_object_or_404(CustomUser, username=self.kwargs.get('username'))
+        request_user = self.request.user 
+        actual_user = self.visible_user()  
+        queryset = Follow.objects.filter(user=request_user, follower=actual_user).exists()
+        can_follow = True
+        if queryset: 
+            can_follow = False  
+        context['can_follow'] = can_follow 
         context['actual_user'] = actual_user
         return context
+
+    def post(self, request, *args, **kwargs):
+        user = self.request.user 
+        other_user = self.visible_user()
+        queryset = Follow.objects.filter(user=user, follower=other_user).exists()
+        if self.request.POST:
+            if not queryset:
+                Follow.objects.create(user=user, follower=other_user)
+            else:
+                Follow.objects.filter(user=user,follower=other_user).delete()
+        return self.get(request, *args, **kwargs)
 
 
 class TwitterCreateView(LoginRequiredMixin, CreateView):

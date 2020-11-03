@@ -21,9 +21,20 @@
         </div>
       </div>
     </h4>
-      <a href="#"><h5>{{ actual_user.profile.followers }} <small>Followers</small></h5></a>
-      <a href="#"><h5>{{ actual_user.profile.following }} <small>Following</small></h5></a>
+      <a href="{% url 'user-followers' actual_user.username %}"><h5>{{ actual_user.profile.followers }} <small>Followers</small></h5></a>
+      <a href="{% url 'user-following' actual_user.username %}"><h5>{{ actual_user.profile.following }} <small>Following</small></h5></a>
       <br>
+      {% if not actual_user == user %}
+          <form method="POST">{% csrf_token %}
+            {% if can_follow %}
+              <button name="" value="" 
+              type="submit" class="btn btn-dark">Follow</button>         
+            {% else %}
+              <button name="" value="" 
+              type="submit" class="btn btn-warning">Unfollow</button> 
+            {% endif %}
+          </form>
+      {% endif %}
     {% else %}
     <!-- For homepage --> 
     <img class="rounded-circle mr-3"
@@ -86,11 +97,9 @@
             <a href="?page=1">&laquo; first</a>
             <a href="?page={{ page_obj.previous_page_number }}">previous</a>
         {% endif %}
-
         <span class="current">
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
         </span>
-
         {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}">next</a>
             <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
