@@ -5,6 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 
+[requires]
+python_version = "3.8"
+
 [packages]
 django = "==3.0.3"
 django-crispy-forms = "==1.8.1"
@@ -12,5 +15,3 @@ gunicorn = "*"
 django-heroku = "*"
 pillow = "*"
 
-[requires]
-python_version = "3.8"
